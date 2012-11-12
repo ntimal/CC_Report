@@ -1,3 +1,23 @@
 \section{Application}
-\label{sec:app}
-
+\label{sec:appl}
+We have constructed a video converter tool in Java\footnote{http://www.java.com} which allows an user to specify what file needs to be converted and to what format it will be converted. 
+The conversion from one format to another is done in the cloud. 
+Using a client-server model, the client uploads  a file and additionally provides the output format. 
+Whereas the server, which is provided by the cloud, deals with converting the uploaded file. 
+When the conversion is done the converted file is written to the local file system of the client. 
+We have used the Jersey\footnote{http://jersey.java.net/}Framework to create a servlet which is constructed using a REST\footnote{http://en.wikipedia.org/wiki/Representational\_state\_transfer} based approach. 
+This servlet contains the algorithm for converting a video and is deployed on a Tomcat server in the cloud. 
+The algorithm uses several methods from the Xuggle\footnote{http://www.xuggle.com/} framework. 
+This framework  is  free and open-source and is used for audio/video manipulation. 
+As for the client we used Jersey Client Framework which provides a comprehensive interface for communicating with a server.
+\pagebreak[1]  
+\subsection{Requirements}
+In this paragraph we will elaborate what requirements are essential for our application. 
+The requirements can be subdivided into two categories: \emph{functional} and \emph{nonfunctional requirements}. 
+A fitting \emph{functional requirement} for our application is that it needs to convert to and from  all commonly known codecs/video formats 
+e.g. Windows Media Video(WMV)\footnote{http://en.wikipedia.org/wiki/Windows\_Media\_Video} 
+and QuickTime MOV\footnote{http://en.wikipedia.org/wiki/QuickTime}.  
+As a \emph{nonfunctional requirement} the servlet needs to be deployed on the cloud, to achieve this goal we will be using the facilities provided by AWS. 
+In particular Amazon  Simple Storage (S3) for storing the WAR file created by the Jersey Servlet and Amazon Elastic Compute Cloud(EC2). 
+An EC2 instance will be comprised of our servlets computational logic, that is once the servlet is launched on an EC2 instance, the instance will be able to execute a video conversion.
+ 

@@ -1,0 +1,33 @@
+\section{Introduction}
+\label{sec:intro}
+This document is constructed in response to WantCloud BV’s interest in moving a new application to the cloud. 
+To this end the CTO of WantCloud wants us to create a (relatively) simple application to identify what types of trade-offs exists when deploying an application on the cloud.
+
+We chose Amazon  Web Services (AWS)\footnote{http://aws.amazon.com/} as our cloud provider because it is one of the major companies providing resources to external parties to date. 
+If WantCloud BV will follow through with their wishes to deploy an application in the cloud most likely AWS will be one to seriously consider. 
+As part of AWS’s policy it offers new users of the cloud a free usage tier\footnote{http://aws.amazon.com/free/}. 
+For our system we solely used the accommodations provided by the free usage tier, in particular the free use  of Elastic Cloud Computing(EC2) micro instances  and Elastic Load Balancer.        
+
+We created an application which allows users to convert a video file to a desired format using a 
+client-server model\footnote{http://en.wikipedia.org/wiki/Client\-server\_model}.  
+Although this may seem to be a simple application its workflow can contain very demanding operations. 
+That is client(/user) needs to upload a video file to the server, the server in turn processes the uploaded file and converts and returns the converted file to the client. 
+The client then stores the converted file to its local file system. 
+We therefore find this application to be fitting for assessing the tradeoffs inherent in cloud based applications.
+
+Our cloud based system will implement the following. 
+Automation, which means that a servlet will automatically be assigned to a EC2 micro instance. 
+Auto-scaling, that is depending on the amount of client requests addition (when CPU usage of existing instances are high) or removal (when CPU usage of an instance is below a low threshold  and can be compensated by an existing instance) EC2 micro instances. 
+Load balancing, equally dividing the work between instances using Round Robin scheduling\footnote{http://en.wikipedia.org/wiki/Round\-robin\_scheduling}. 
+Reliability is achieved attaching by every micro instance to a persistent storage volume. 
+And last but not least monitoring which will provide a comprehensive view of e.g. the amount of resources used by each live micro instance. 
+The implementation of the aforementioned features will be accomplished by interfacing AWS with Python’s boto framework. 
+The code of this framework can be found at this location (http://code.google.com/p/boto/). 
+This interface extends among other components of AWS  to  EC2  and Simple Storage Service(S3) which will be used by our cloud based system.      
+
+
+The rest of the report is organized as follows. Section ~\ref{sec:appl} gives a more in-depth view of the application that is implemented. 
+Section ~\ref{sec:design} discusses how the features of the cloud based system are implemented (automation, auto-scaling, load balancing, reliability and monitoring). 
+The experimental setup  and the experiments conducted are discussed in Section ~\ref{sec:exp}. 
+Any limitations of our cloud based system based on the experimental results from Section ~\ref{sec:exp} appear in Section ~\ref{sec:disc}. 
+Finally the paper concludes in Section ~\ref{sec:conc}.
