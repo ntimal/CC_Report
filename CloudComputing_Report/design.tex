@@ -1,4 +1,49 @@
 \section{System Design}
 \label{sec:design}
-\subsection{Resource Management Architecture}
-\subsubsection{System Policies}
+The online video converter developed for WantCloudBV is deployed using Amazon Web Services (AWS). 
+The  video converter is build as a client-server model where the server part resides in the cloud and client is launched on the local machine. 
+The application is developed using Java and we use AWS Java SDK to deploy our server’s .war file to AWS Elastic Beanstalk Server (EBS) by uploading the application  to Amazon S3. 
+The Elastic Beanstalk environment is setup as Apache Tomcat Server 6 and deployed with a keypair to help in SSH-ing to the instances attached to EBS, the URL of this EBS environment is used by the application’s client to send request to the server. 
+The launch of the EBS is associated with the booting of a t1.small instance(http://aws.amazon.com/ec2/instance-types). 
+Once the server is deployed and running (state of instance), video converter client can be launched to make requests to the server. 
+
+\subsection{System Objectives}
+For the video converter application we designed an IaaS based system with the desired properties namely automation, elasticity, performance, reliability, and monitoring. 
+We have used boto(a python interface to Amazon Web Services) to write a python script which implements all the above stated features.
+\subsubsection{Automation}
+This python script\footnote{https://github.com/nidhisingh88/CC\_script} implements all the features of the IaaS based system without any human intervention. 
+When the server is ready we run this script and then proceed with video conversion requests. 
+The script checks for all the running instances, starts monitoring on each of these instances, automates the scaling of instances based on CPU Utilisation metric, and balances the load on these instances. 
+All the monitoring statistics are gathered in a log file.
+\subsubsection{Reliability and Durability}
+The application launches with minimum one instance, and initially attaches an ephemeral EBS storage volume to it, which means if the instance terminates the attached storage volume will be deleted as well. 
+In our system(script) we first find out all the instances and attach each one of them with a unique EBS storage volume which is permanent and is not deleted with termination of an instance.
+This same volume is then attached to the newly launched  instance, thus providing reliability between instance restarts and re-boots.
+\subsubsection{Monitoring}
+In the first prototype of our monitoring module, every instance was monitored by first SSH=ing into the instance and running the script which calculated the cpu usage and network I/O metric and stored the results in a file on the instance. 
+This script was run as a daemon on the system. 
+The log file was retrieved from every instance and stored as unique files corresponding to every instance. 
+This approach was however rejected since the command used for calculating cpu usage did not give the correct and reliable results. 
+Find the discussion here \footnote{https://forums.aws.amazon.com/thread.jspa?threadID=95288} \footnote{http://www.axibase.com/cloud/2010/07/22/ec2-monitoring-the-case-of-stolen-cpu/}
+“If you run a command like “top” from within an EC2 instance, you will not see an accurate CPU utilization metric for your instance. 
+Your EC2 instance runs inside a virtual machine. 
+The only way to capture an accurate metric for CPU utilization is to get that data from the virtual machine parent. 
+Our CloudWatch metrics capture data directly from the parent of the virtual machine so you can get metrics for your instances”. 
+According to the suggestions, we were forced to use Amazon’s CloudWatch for monitoring our instances. 
+The final design queries the CloudWatch for metrics and stores the results in a local file as log, the queries are launched at a gap of 60 seconds. 
+The log file contains the metric with timestamp and instance id.
+\subsubsection{Load Balancing}
+The system script looks for the running EC2 instances and attaches them to a elastic load balancer which uses round robin technique to balance load between the instances. 
+All newly launched instances are registered with the load balancer and all terminating instances are deregistered.
+\subsubsection{Security}
+Our system uses security groups to implement security of the instances. 
+A new security group is created with traffic allowed only on ports 80(HTTP) and 22(SSH), all the running and newly spawned instances are associated with this security group.
+\subsubsection{AutoScale}
+The appication starts with one instance and our IaaS system is capable of autoscaling the number of instances. 
+Every running instance is checked for the average CPU utilization in the past one minute, this value is checked against a minimum and a maximum threshold which are user configurable in the system script. 
+If the CPU utilization exceeds the maximum configured threshold then a new instance is spawned which is a clone of the previous instance. 
+The newly launched instance is configured for monitoring, a new permanent EBS volume is attached to it and it is also attached to the current load balancer. 
+If the CPU usage of the instance is below the minimum configured then the instance is terminated and detached from the load balancer. 
+Our system design also permits to specify the maximum number of instances that should be spawned and never terminates all the instances, there will always be one running instance. 
+Autoscaling is automated except the configuration of initial threshold parameters.
+Once the system script is started it automatically checks for autoscaling implementation every 10 seconds.
