@@ -1,3 +1,11 @@
 \begin{abstract}
-
+This report provides a use case for development of WantCloud BV’s new cloud based application. 
+For this, we develop a client-server based video converter application. 
+The server of this application is deployed on Amazon Web Services(AWS) and uses its Elastic Compute (EC2) service. 
+The system is developed as an IaaS based system which uses computing resources leased from the Amazon cloud (AWS). 
+The developed IaaS system has a number of features like automation, elasticity, performance measuring, reliability, security and monitoring ability. 
+These features are implemented using a python script which communicates with AWS using an interface called boto. 
+These features are tested by performing several experiments which also run as python scripts, for our experiments we use m1.small instance type of AWS EC2. 
+The application is not limited to this instance type and can be used with every other instance type.
+According to the experimental findings, we see that the cost and charge time of the application can be really high if it is used by 1 million user concurrently, as a suggestion we recommend using the cloud only if the WantCloud BV can afford it or is using CPU intensive specific instance types as this application has high CPU usage peaks. 
 \end{abstract}

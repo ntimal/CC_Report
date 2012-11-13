@@ -4,7 +4,7 @@ The online video converter developed for WantCloudBV is deployed using Amazon We
 The  video converter is build as a client-server model where the server part resides in the cloud and client is launched on the local machine. 
 The application is developed using Java and we use AWS Java SDK to deploy our server’s .war file to AWS Elastic Beanstalk Server (EBS) by uploading the application  to Amazon S3. 
 The Elastic Beanstalk environment is setup as Apache Tomcat Server 6 and deployed with a keypair to help in SSH-ing to the instances attached to EBS, the URL of this EBS environment is used by the application’s client to send request to the server. 
-The launch of the EBS is associated with the booting of a t1.small instance(http://aws.amazon.com/ec2/instance-types). 
+The launch of the EBS is associated with the booting of a t1.small instance\footnote{http://aws.amazon.com/ec2/instance-types}. 
 Once the server is deployed and running (state of instance), video converter client can be launched to make requests to the server. 
 
 \subsection{System Objectives}

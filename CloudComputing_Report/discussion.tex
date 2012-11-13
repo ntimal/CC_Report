@@ -1,2 +1,13 @@
-\section{Discussion}
+\section{Discussion and Conlusion}
+Our online video converter application is CPU intensive and since it temporarily stores data in the server before being outputted to the user it is also disk intensive. 
+As an observation we found out that the application has high response times with increase in users, and also the CPU utilization increases many fold within few seconds, which leaves us with two choices either to autoscale and add more instances or change the instance types to higher types like m1.medium or m1.large, in our IaaS system we autoscale to more instances of the same instance types i.e. m1.small. 
+Every instance takes close to 30 seconds to come to a running state, this maybe a downtime for your server when it cannot handle any client requests. 
+One solution to this problem is to provision instances based on your average number of requests per hour metric or to adjust the upper threshold values for scaling up of the instances based on the average traffic.
+
+
+By extrapolating the results obtained from our experiment we can determine the charged time and charge cost.
+If the application is used by 100000 users concurrently for an hour then approximately 6000 m1.small instances are needed.
+This will amount to 6000 * 24 * $0.065, which is $9360 per day, $280800 per year and approximately $3.4M per year.
+These results can be varied if other CPU intensive instance type are used and the cost can be reduced to a large extent.
+Thus, we do not recommend WantCloud BV to use cloud based services for online video converter application if their average number of users are very high and they use m1.small instance types.
 \label{sec:disc}
