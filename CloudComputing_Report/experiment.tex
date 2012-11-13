@@ -1,4 +1,14 @@
 \section{Experimental Results}
 \label{sec:exp}
 \subsection{Experimental Setup}
+Our application is running on EC2 instances. 
+For all our experiments we used t1.micro instances but found out that it cannot service more than 10 requests and cannot cope with bursts of traffic\footnote{http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/concepts\_micro\_instances.html}. 
+We were using t1.micro as it is part of AWS free tier group. 
+So if the company anticipates say 100 users at a time, then they need 10 t1.micro instances and scale up or down accordingly.
+Hence, we use the next instance type m1.small for our application. 
+The auto-scaling system implementation will only  spawn m1.small instances as new instances. 
+For testing each module of the system design, we developed simple python scripts which use threads. 
+We use a 105KB file that will be converted to the desired format. 
+The IaaS system also runs on a python script which uses boto to interface with the AWS.
+
 \subsection{Experiments}
